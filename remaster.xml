@@ -1,0 +1,24 @@
+<!-- Generate a tree from the stochastic logistic model. -->
+
+<beast version="2.0" namespace="beast.base.inference:beast.base.inference.parameter:remaster">
+  <run spec="Simulator" nSims="1">
+    <simulate id="tree" spec="SimulatedTree">
+      <trajectory id="trajectory" spec="StochasticTrajectory" maxTime="100">
+        <population id="X" spec="RealParameter" value="1"/>
+        <samplePopulation id="samp" spec="RealParameter" value="0"/>
+
+        <reaction spec="Reaction" rate="$(lambda=1.0)"> X -> 2X </reaction>
+        <reaction spec="Reaction" rate="0.01"> 2X -> X </reaction>
+        <reaction spec="PunctualReaction" n="100" times="100"> X -> samp </reaction>
+      </trajectory>
+    </simulate>
+
+    <logger fileName="$(filebase)_$(lambda).nexus">
+      <log idref="tree"/>
+    </logger>
+
+    <logger>
+      <log spec="StochasticTrajectoryStatsLogger" traj="@trajectory"/>
+    </logger>
+  </run>
+</beast>
